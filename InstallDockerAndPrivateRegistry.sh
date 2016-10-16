@@ -159,6 +159,9 @@ if isagent ; then
   echo 'DOCKER_OPTS="-H unix:///var/run/docker.sock -H 0.0.0.0:2375"' | sudo tee -a /etc/default/docker
 fi
 
+# Setup Private Registry
+echo "{ \"insecure-registries\":[\"r.devopshub.cn:5000\",\"localhost:5000\"] }" | sudo tee /etc/docker/daemon.json
+
 echo "Installing docker compose"
 curl -L https://get.daocloud.io/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
@@ -222,7 +225,7 @@ MASTER0IPADDR="${BASESUBNET}${MASTERFIRSTADDR}"
 if ismaster ; then
   mkdir -p /data/consul
   echo "consul:
-  image: \"progrium/consul\"
+  image: \"r.devopshub.cn:5000/progrium/consul\"
   command: -server -node $VMNAME $consulargs
   ports:
     - \"8300:8300\"
@@ -236,7 +239,7 @@ if ismaster ; then
     - \"/data/consul:/data\"
   restart: \"always\"
 swarm:
-  image: \"$SWARM_VERSION\"
+  image: \"r.devopshub.cn:5000/$SWARM_VERSION\"
   command: manage --replication --advertise $HOSTADDR:2375 consul://$MASTER0IPADDR:8500/nodes
   ports:
     - \"2375:2375\"
@@ -256,7 +259,7 @@ fi
 
 if isagent ; then
   echo "swarm:
-  image: \"$SWARM_VERSION\"
+  image: \"r.devopshub.cn:5000/$SWARM_VERSION\"
   restart: \"always\"
   command: join --advertise=$HOSTADDR:2375 consul://$MASTER0IPADDR:8500/nodes
 " > docker-compose.yml
@@ -266,6 +269,10 @@ if isagent ; then
   #popd
   echo "completed starting docker swarm on the agent"
 fi
+
+echo "Pull the Registry:2 image"
+docker pull r.devopshub.cn:5000/registry:2 
+docker tag r.devopshub.cn:5000/registry:2 registry:2
 
 echo "processes at end of script"
 ps ax
