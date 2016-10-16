@@ -10,7 +10,7 @@
     },
     "scriptUrl":{
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/ups216/DockerSwarm/master/InstallSwarm.sh",
+      "defaultValue": "https://raw.githubusercontent.com/ups216/DockerSwarm/master/InstallDockerAndPrivateRegistry.sh",
       "metadata": {
         "description": "The url of the script that install docker and swarm."
       } 
@@ -476,7 +476,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmNameMaster'), copyIndex(), '/InstallSwarm')]",
+      "name": "[concat(variables('vmNameMaster'), copyIndex(), '/InstallDockerAndPrivateRegistry')]",
       "apiVersion": "[variables('apiVersion')]",
       "location": "[resourceGroup().location]",
        "copy": {
@@ -494,13 +494,13 @@
                     "fileUris": [
                         "[parameters('scriptUrl')]"
                     ],
-                    "commandToExecute": "[concat('/bin/bash -c \"/bin/bash InstallSwarm.sh ', variables('clusterInstallParameters'), ' >> /var/log/azure/cluster-bootstrap.log 2>&1\"')]"
+                    "commandToExecute": "[concat('/bin/bash -c \"/bin/bash InstallDockerAndPrivateRegistry.sh ', variables('clusterInstallParameters'), ' >> /var/log/azure/cluster-bootstrap.log 2>&1\"')]"
                 }
             }
     },
    {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmNameNode'), copyIndex(), '/InstallSwarm')]",
+      "name": "[concat(variables('vmNameNode'), copyIndex(), '/InstallDockerAndPrivateRegistry')]",
       "apiVersion": "[variables('apiVersion')]",
       "location": "[resourceGroup().location]",
       "copy": {
@@ -518,7 +518,7 @@
                     "fileUris": [
                         "[parameters('scriptUrl')]"
                     ],
-                    "commandToExecute": "[concat('/usr/bin/nohup /bin/bash -c \"/bin/bash InstallSwarm.sh ', variables('clusterInstallParameters'), ' >> /var/log/azure/cluster-bootstrap.log 2>&1 &\" &')]"
+                    "commandToExecute": "[concat('/usr/bin/nohup /bin/bash -c \"/bin/bash InstallDockerAndPrivateRegistry.sh ', variables('clusterInstallParameters'), ' >> /var/log/azure/cluster-bootstrap.log 2>&1 &\" &')]"
                 }
             }
     }
