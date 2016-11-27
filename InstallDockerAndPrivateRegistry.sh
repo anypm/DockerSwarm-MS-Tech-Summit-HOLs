@@ -160,7 +160,7 @@ if isagent ; then
 fi
 
 # Setup Private Registry
-echo "{ \"insecure-registries\":[\"r.devopshub.cn:5000\",\"localhost:5000\"] }" | sudo tee /etc/docker/daemon.json
+echo "{ \"insecure-registries\":[\"harbor.devopshub.cn\",\"localhost:5000\"] }" | sudo tee /etc/docker/daemon.json
 
 echo "Installing docker compose"
 curl -L https://get.daocloud.io/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
@@ -191,9 +191,9 @@ ensureDocker()
 }
 ensureDocker
 
-echo "Pull the Registry:2 image"
-docker pull r.devopshub.cn:5000/registry:2 
-docker tag r.devopshub.cn:5000/registry:2 registry:2
+echo "Pull the Registry:2.5.0 image"
+docker pull harbor.devopshub.cn/test/registry:2.5.0 
+docker tag harbor.devopshub.cn/test/registry:2.5.0 registry:2.5.0
 
 echo "processes at end of script"
 ps ax
